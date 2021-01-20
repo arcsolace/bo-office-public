@@ -132,10 +132,6 @@ func getId(w http.ResponseWriter, r *http.Request) {
 func main() {
 	//Init mux router
 	var r = mux.NewRouter()
-	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-        w.Header().Set("Content-Type", "application/json")
-        w.Write([]byte("{\"hello\": \"world\"}"))
-    })
   // routes
 	r.HandleFunc("/bo", getIds).Methods("GET", "OPTIONS")
 	r.HandleFunc("/bo/{user_id}", getId).Methods("GET", "OPTIONS")
