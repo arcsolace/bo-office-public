@@ -129,14 +129,29 @@ func getId(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(user)
 }
 
+func determinePort() (string, error) {
+	port := os.Getenv("PORT")
+	if port == "" {
+		return "", fmt.Errorf("$PORT not set")
+	}
+	return ":" + port, nil
+}
+
 func main() {
 	//Init mux router
+	addr, err := determinePort()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	var r = mux.NewRouter()
   // routes
 	r.HandleFunc("/bo", getIds).Methods("GET", "OPTIONS")
 	r.HandleFunc("/bo/{user_id}", getId).Methods("GET", "OPTIONS")
-
   // get port address from helper
-  var config = GetConfiguration()
-	log.Fatal(http.ListenAndServe(config.Port, r))
+	log.Printf("Listening on %s...\n", addr)
+	if err := http.ListenAndServe(addr, r); err != nil {
+		panic(err)
+	}
 }
